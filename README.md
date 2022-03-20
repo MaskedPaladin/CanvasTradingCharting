@@ -3,6 +3,6 @@
 # Usage
 ![screen-gif](./readme/Animation.gif)
 # Todo
-- System to Adjust chart with high values
+- System to Adjust chart with higher/lower values
 - System to obtain csv
 - Live charting
