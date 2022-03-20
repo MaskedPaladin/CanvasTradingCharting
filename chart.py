@@ -20,7 +20,7 @@ def loadFromMtCsv(path):
 	lines = f.readlines()
 	for line in lines:
 		data = line.split(",")
-		values.append((int(float(data[1])), int(float(data[4])), int(float(data[2])), int(float(data[3]))))
+		values.append((int(round(float(data[1]), 0)), int(round(float(data[4]), 0)), int(round(float(data[2]), 0)), int(round(float(data[3]), 0))))
 	return values
 def getMax(array):
 	max_value = 0
@@ -43,4 +43,6 @@ def getTilesByPoints(dataArray):
 					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
 					tiles.append((i, 0-n, "\033[0;0;42m "))
+			elif entry[0] == entry[1]:
+				tiles.append((i, 0-n, "\033[0;0;0m|"))
 	return tiles
