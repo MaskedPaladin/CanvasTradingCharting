@@ -3,4 +3,4 @@
 # Usage
 ![screen-gif](./readme/Animation.gif)
 # Todo
-- Adjust chart with high values system
+-System to Adjust chart with high values
