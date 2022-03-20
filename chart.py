@@ -1,5 +1,5 @@
-import canvas as c
 import random
+import canvas as c
 
 #Open, Close, High, Low
 def simulate(candles):
@@ -31,16 +31,16 @@ def getMax(array):
 
 def getTilesByPoints(dataArray):
 	tiles = []
-	for i, entry in enumerate(data):
+	for i, entry in enumerate(dataArray):
 		for n in range(entry[3], entry[2]):
 			if entry[0] > entry[1]:
 				if n not in range(entry[1], entry[0]):
-					tiles.append(c.Tile(i, 0-n, 0, "\033[0;0;0m|"))
+					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
-					tiles.append(c.Tile(i, 0-n, 0, "\033[0;0;41m "))
+					tiles.append((i, 0-n, "\033[0;0;41m "))
 			elif entry[0] < entry[1]:
 				if n not in range(entry[0], entry[1]):
-					tiles.append(c.Tile(i, 0-n, 0, "\033[0;0;0m|"))
+					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
-					tiles.append(c.Tile(i, 0-n, 0, "\033[0;0;42m "))
+					tiles.append((i, 0-n, "\033[0;0;42m "))
 	return tiles
