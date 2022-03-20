@@ -14,28 +14,34 @@ def mainMenu():
 	else:
 		mainMenu()
 def loadMenu():
-	files = os.listdir("csv")
-	for i, f in enumerate(files):
-		print(str(i)+"/"+str(f))
-	option = input("Select file to load\n> ") or None	
-	if option == None:
-		loadMenu()
-	elif int(option) not in range(len(files)):
-		loadMenu()
-	else:
-		candles = input("Number of candles to chart from the end\n> ") or None
-		if candles == None:
-			showChart("csv/"+files[int(option)], None)	
+	try:
+		files = os.listdir("csv")
+		for i, f in enumerate(files):
+			print(str(i)+"/"+str(f))
+		option = input("Select file to load\n> ") or None	
+		if option == None:
+			loadMenu()
+		elif int(option) not in range(len(files)):
+			loadMenu()
 		else:
-			showChart("csv/"+files[int(option)], int(candles))
-def showChart(path, candles):
+			candles = input("Number of candles to chart from the end\n> ") or None
+			zoomFactor = input("Set the zoom\n> ")
+			if candles == None and zoomFactor == None:
+				loadMenu()
+			if candles == None and zoomFactor != None:
+				showChart("csv/"+files[int(option)], None, int(zoomFactor))	
+			else:
+				showChart("csv/"+files[int(option)], int(candles))
+	except:
+		loadMenu()		
+def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
 	if candles != None:
 		toDraw = data[len(data) - candles:]
 	else:
 		toDraw = data
 	cv = canvas.Canvas(len(toDraw), chart.getMax(toDraw))
-	cv.update(chart.getTilesByPoints(toDraw))
+	cv.update(chart.getTilesByPoints(toDraw, zoomFactor))
 	cv.drawCanvas()
 
 	print("Open", "Close", "High", "Low")

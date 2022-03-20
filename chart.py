@@ -29,20 +29,20 @@ def getMax(array):
 			max_value = max(entry)
 	return max_value
 
-def getTilesByPoints(dataArray):
+def getTilesByPoints(dataArray, zoomFactor):
 	tiles = []
 	for i, entry in enumerate(dataArray):
 		for n in range(entry[3], entry[2]):
 			if entry[0] > entry[1]:
 				if n not in range(entry[1], entry[0]):
-					tiles.append((i, 0-n, "\033[0;0;0m|"))
+					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;0m|"))
 				else:	
-					tiles.append((i, 0-n, "\033[0;0;41m "))
+					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;41m "))
 			elif entry[0] < entry[1]:
 				if n not in range(entry[0], entry[1]):
-					tiles.append((i, 0-n, "\033[0;0;0m|"))
+					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;0m|"))
 				else:	
-					tiles.append((i, 0-n, "\033[0;0;42m "))
+					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;42m "))
 			elif entry[0] == entry[1]:
-				tiles.append((i, 0-n, "\033[0;0;0m|"))
+				tiles.append((i, int(0-n/zoomFactor), "\033[0;0;0m|"))
 	return tiles
