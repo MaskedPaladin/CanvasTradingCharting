@@ -1,2 +1,0 @@
-# CanvasTradingCharting
-# CanvasTradingCharting
