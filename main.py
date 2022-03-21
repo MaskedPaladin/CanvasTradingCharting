@@ -24,14 +24,15 @@ def loadMenu():
 		elif int(option) not in range(len(files)):
 			loadMenu()
 		else:
-			candles = input("Number of candles to chart from the end\n> ") or None
+			candles = input("Number of candles to chart from the end\n> ")
 			zoomFactor = input("Set the zoom\n> ")
-			if candles == None and zoomFactor == None:
-				loadMenu()
-			if candles == None and zoomFactor != None:
-				showChart("csv/"+files[int(option)], None, int(zoomFactor))	
-			else:
-				showChart("csv/"+files[int(option)], int(candles))
+			if not candles:
+				candles = None
+			if not zoomFactor:
+				zoomFactor = 1
+			if candles:
+				candles = int(candles)
+			showChart("csv/"+files[int(option)], candles, int(zoomFactor))	
 	except:
 		loadMenu()		
 def showChart(path, candles, zoomFactor):
