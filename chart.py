@@ -20,7 +20,7 @@ def loadFromMtCsv(path):
 	lines = f.readlines()
 	for line in lines:
 		data = line.split(",")
-		values.append((int(round(float(data[1]), 0)), int(round(float(data[4]), 0)), int(round(float(data[2]), 0)), int(round(float(data[3]), 0))))
+		values.append((float(data[1]), float(data[4]), float(data[2]), float(data[3])))
 	return values
 def getMax(array):
 	max_value = 0
@@ -29,20 +29,20 @@ def getMax(array):
 			max_value = max(entry)
 	return max_value
 
-def getTilesByPoints(dataArray, zoomFactor):
+def getTilesByPoints(dataArray):
 	tiles = []
 	for i, entry in enumerate(dataArray):
-		for n in range(entry[3], entry[2]):
+		for n in range(int(round(entry[3])), int(round(entry[2]))):
 			if entry[0] > entry[1]:
-				if n not in range(entry[1], entry[0]):
-					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;0m|"))
+				if n not in range(int(round(entry[1])), int(round(entry[0]))):
+					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
-					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;41m "))
+					tiles.append((i, 0-n, "\033[0;0;41m "))
 			elif entry[0] < entry[1]:
-				if n not in range(entry[0], entry[1]):
-					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;0m|"))
+				if n not in range(int(round(entry[0])), int(round(entry[1]))):
+					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
-					tiles.append((i, int(0-n/zoomFactor), "\033[0;0;42m "))
+					tiles.append((i, 0-n, "\033[0;0;42m "))
 			elif entry[0] == entry[1]:
-				tiles.append((i, int(0-n/zoomFactor), "\033[0;0;0m|"))
+				tiles.append((i, 0-n, "\033[0;0;0m|"))
 	return tiles

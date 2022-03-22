@@ -2,6 +2,7 @@ import canvas
 import chart
 import sys
 import os
+import logging
 
 def mainMenu():
 	option = input("1) Load chart from csv\n8) Exit\n> ") or None
@@ -33,27 +34,30 @@ def loadMenu():
 			if candles:
 				candles = int(candles)
 			showChart("csv/"+files[int(option)], candles, int(zoomFactor))	
-	except:
+	except Exception as e:
+		logging.exception("Error")
 		loadMenu()		
 def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
+	dataIntegers = []
+	for entry in data:
+		dataIntegers.append((int(entry[0]/zoomFactor), int(entry[1]/zoomFactor), int(entry[2]/zoomFactor), int(entry[3]/zoomFactor)))
 	if candles != None:
-		toDraw = data[len(data) - candles:]
+		toDraw = dataIntegers[len(dataIntegers) - candles:]
 	else:
-		toDraw = data
-	cv = canvas.Canvas(len(toDraw), chart.getMax(toDraw))
-	cv.update(chart.getTilesByPoints(toDraw, zoomFactor))
+		toDraw = dataIntegers
+	cv = canvas.Canvas(len(toDraw), int(chart.getMax(toDraw)))
+	cv.update(chart.getTilesByPoints(toDraw))
 	cv.drawCanvas()
-
 	print("Open", "Close", "High", "Low")
-	for value in toDraw:
+	for value in data[len(dataIntegers) - candles:]:
 		if value[0] > value[1]:
-			print("\033[0;0;31m"+ str(value[0]), str(value[1]), str(value[2]), str(value[3]))
+			print("\033[0;0;31m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
 		elif value[0] < value[1]:
-			print("\033[0;0;32m" + str(value[0]),  str(value[1]), str(value[2]), str(value[3]))
+			print("\033[0;0;32m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
 		elif value[0] == value[1]:
-			print("\033[0;0;0m" + str(value[0]), str(value[1]), str(value[2]),  str(value[3]))
-	print("\033[0;0;0m")
+			print("\033[0;0;0m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+	print("\033[0;0;0m\n")
 def main():
 	while True:
 		mainMenu()
