@@ -32,8 +32,6 @@ def console():
 		showAll()
 		console()
 
-
-
 def main():
 	console()
 main()

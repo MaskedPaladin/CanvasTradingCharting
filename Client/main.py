@@ -3,11 +3,15 @@ import chart
 import sys
 import os
 import logging
+import client
+import socket
 
 def mainMenu():
-	option = input("1) Load chart from csv\n8) Exit\n> ") or None
+	option = input("1) Load chart from csv\n2) Connect to server\n8) Exit\n> ") or None
 	if option == "1":
 		loadMenu()
+	elif option == "2":
+		clientMenu()
 	elif option == "8":
 		sys.exit()
 	elif option == None:
@@ -36,7 +40,23 @@ def loadMenu():
 			showChart("csv/"+files[int(option)], candles, int(zoomFactor))	
 	except Exception as e:
 		logging.exception("Error")
-		loadMenu()		
+		loadMenu()
+def clientMenu():
+	c = client.ThreadedTcpSocketClient("localhost", 25565, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
+	c.start()
+	option = input("1) Login\n2) Register\n> ")
+	if option == "1":
+		user = str(input("User> "))
+		password = str(input("Password> "))
+		toSend = ("05,"+user+","+password).encode("utf-8")
+		c.send(toSend)
+	if option == "2":
+		user = str(input("User> "))
+		password = str(input("Password> "))
+		money = str(input("Money> "))
+		toSend = ("06,"+user+","+password+","+money).encode("utf-8")
+		c.send(toSend)
+	c.join()
 def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
 	dataIntegers = []

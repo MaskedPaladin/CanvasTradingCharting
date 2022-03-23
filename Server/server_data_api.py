@@ -10,7 +10,7 @@ def loadUser(login, password):
 			return "01" 
 			f.close()
 			break
-	# 02 Code user dont exist and dont be loaded
+	# 02 Code: user dont exist and dont be loaded
 	f.close()
 	return "02"
 def insertUser(login, password, money):	
