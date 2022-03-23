@@ -20,8 +20,6 @@ class ThreadedTcpSocketServer(threading.Thread):
 				connection.send(sda.loadUser(command[1], command[2]).encode("utf-8"))
 			elif command[0] == "06":
 				connection.send(sda.insertUser(command[1], command[2], command[3]).encode("utf-8"))
-				
 		
 server = ThreadedTcpSocketServer('localhost', 25565, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
 server.start()
-server.join()
