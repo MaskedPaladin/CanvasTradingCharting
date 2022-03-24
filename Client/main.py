@@ -21,6 +21,17 @@ def mainMenu():
 		mainMenu()
 def loadMenu():
 	try:
+		c = client.ThreadedTcpSocketClient("localhost", 25565, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
+		c.start()
+		toSend = "09".encode("utf-8")
+		c.send(toSend)
+		data = c.recv(1024)
+		for b in data:
+			print("Reciving data")
+			f = open("csv/csv","a+")
+			f.write(b)
+		c.join()
+		f.close()
 		files = os.listdir("csv")
 		for i, f in enumerate(files):
 			print(str(i)+"/"+str(f))
@@ -41,26 +52,24 @@ def loadMenu():
 			showChart("csv/"+files[int(option)], candles, int(zoomFactor))	
 	except Exception as e:
 		logging.exception("Error")
-		loadMenu()
+		sys.exit()
 def clientMenu():
-	c = client.ThreadedTcpSocketClient("localhost", 25565, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
 	try:
-		c.start()
 		option = input("1) Login\n2) Register\n> ")
 		if option == "1":
 			user = str(input("User> "))
 			password = str(input("Password> "))
-			toSend = ("05,"+user+","+password).encode("utf-8")
-			c.send(toSend)
+			code = client.loginSend("localhost", 25565, user, password)
+			print(code)
 		if option == "2":
 			user = str(input("User> "))
 			password = str(input("Password> "))
-			money = str(input("Money> "))
-			toSend = ("06,"+user+","+password+","+money).encode("utf-8")
-			c.send(toSend)
+			money = str(input("Money> "))	
+			code = client.registerSend("localhost", 25565, user, password, money)
+			print(code)
 	except Exception as e:
 		logging.exception("Cant connect")
-	c.join()
+
 def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
 	dataIntegers = []

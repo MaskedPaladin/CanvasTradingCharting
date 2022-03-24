@@ -7,9 +7,8 @@ def loadUser(login, password):
 	for l in lines:
 		fields = l.split(",")
 		if login == fields[0] and password == fields[1]:
-			return "01" 
 			f.close()
-			break
+			return "01" 
 	# 02 Code: user dont exist and dont be loaded
 	f.close()
 	return "02"
@@ -57,3 +56,9 @@ def showAll():
 		print("-------------------------------")
 	f.close()
 	return "01"
+def getAllCSV():
+	files = os.listdir("csv")
+	fileArray = []
+	for i, f in enumerate(files):
+		fileArray.append(open("csv/"+files[i], "rb"))
+	return fileArray
