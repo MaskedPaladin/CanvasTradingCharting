@@ -65,7 +65,7 @@ def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
 	dataIntegers = []
 	for entry in data:
-		dataIntegers.append((int(entry[0]/zoomFactor), int(entry[1]/zoomFactor), int(entry[2]/zoomFactor), int(entry[3]/zoomFactor)))
+		dataIntegers.append((int(math.log(entry[0])*zoomFactor), int(math.log(entry[1])*zoomFactor), int(math.log(entry[2])*zoomFactor), int(math.log(entry[3])*zoomFactor)))
 	if candles != None:
 		toDraw = dataIntegers[len(dataIntegers) - candles:]
 	toDraw = dataIntegers
