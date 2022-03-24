@@ -1,7 +1,7 @@
 import random
 import canvas as c
 
-#Open, Close, High, Low
+#Open, High, Low, Close
 def simulate(candles):
 	dataArray = []
 	for i in range(candles):
@@ -20,7 +20,7 @@ def loadFromMtCsv(path):
 	lines = f.readlines()
 	for line in lines:
 		data = line.split(",")
-		values.append((float(data[1]), float(data[4]), float(data[2]), float(data[3])))
+		values.append((float(data[1]), float(data[2]), float(data[3]), float(data[4])))
 	return values
 def getMax(array):
 	max_value = 0
@@ -32,17 +32,17 @@ def getMax(array):
 def getTilesByPoints(dataArray):
 	tiles = []
 	for i, entry in enumerate(dataArray):
-		for n in range(int(round(entry[3])), int(round(entry[2]))):
-			if entry[0] > entry[1]:
-				if n not in range(int(round(entry[1])), int(round(entry[0]))):
+		for n in range(int(round(entry[2])), int(round(entry[1]))):
+			if entry[0] > entry[3]:
+				if n not in range(int(round(entry[3])), int(round(entry[0]))):
 					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
 					tiles.append((i, 0-n, "\033[0;0;41m "))
-			elif entry[0] < entry[1]:
-				if n not in range(int(round(entry[0])), int(round(entry[1]))):
+			elif entry[0] < entry[3]:
+				if n not in range(int(round(entry[0])), int(round(entry[3]))):
 					tiles.append((i, 0-n, "\033[0;0;0m|"))
 				else:	
 					tiles.append((i, 0-n, "\033[0;0;42m "))
-			elif entry[0] == entry[1]:
+			elif entry[0] == entry[3]:
 				tiles.append((i, 0-n, "\033[0;0;0m|"))
 	return tiles

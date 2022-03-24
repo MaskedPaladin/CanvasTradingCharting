@@ -5,6 +5,7 @@ import os
 import logging
 import client
 import socket
+import math
 
 def mainMenu():
 	option = input("1) Load chart from csv\n2) Connect to server\n8) Exit\n> ") or None
@@ -43,19 +44,22 @@ def loadMenu():
 		loadMenu()
 def clientMenu():
 	c = client.ThreadedTcpSocketClient("localhost", 25565, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
-	c.start()
-	option = input("1) Login\n2) Register\n> ")
-	if option == "1":
-		user = str(input("User> "))
-		password = str(input("Password> "))
-		toSend = ("05,"+user+","+password).encode("utf-8")
-		c.send(toSend)
-	if option == "2":
-		user = str(input("User> "))
-		password = str(input("Password> "))
-		money = str(input("Money> "))
-		toSend = ("06,"+user+","+password+","+money).encode("utf-8")
-		c.send(toSend)
+	try:
+		c.start()
+		option = input("1) Login\n2) Register\n> ")
+		if option == "1":
+			user = str(input("User> "))
+			password = str(input("Password> "))
+			toSend = ("05,"+user+","+password).encode("utf-8")
+			c.send(toSend)
+		if option == "2":
+			user = str(input("User> "))
+			password = str(input("Password> "))
+			money = str(input("Money> "))
+			toSend = ("06,"+user+","+password+","+money).encode("utf-8")
+			c.send(toSend)
+	except Exception as e:
+		logging.exception("Cant connect")
 	c.join()
 def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
@@ -64,20 +68,30 @@ def showChart(path, candles, zoomFactor):
 		dataIntegers.append((int(entry[0]/zoomFactor), int(entry[1]/zoomFactor), int(entry[2]/zoomFactor), int(entry[3]/zoomFactor)))
 	if candles != None:
 		toDraw = dataIntegers[len(dataIntegers) - candles:]
-	else:
-		toDraw = dataIntegers
+	toDraw = dataIntegers
 	cv = canvas.Canvas(len(toDraw), int(chart.getMax(toDraw)))
 	cv.update(chart.getTilesByPoints(toDraw))
 	cv.drawCanvas()
-	print("Open", "Close", "High", "Low")
-	for value in data[len(dataIntegers) - candles:]:
-		if value[0] > value[1]:
-			print("\033[0;0;31m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
-		elif value[0] < value[1]:
-			print("\033[0;0;32m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
-		elif value[0] == value[1]:
-			print("\033[0;0;0m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
-	print("\033[0;0;0m\n")
+	if candles != None:
+		print("Open", "High", "Low", "Close")
+		for value in data[len(dataIntegers) - candles:]:
+			if value[0] > value[3]:
+				print("\033[0;0;32m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+			elif value[0] < value[3]:
+				print("\033[0;0;31m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+			elif value[0] == value[3]:
+				print("\033[0;0;0m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+		print("\033[0;0;0m\n")
+	else:	
+		print("Open", "High", "Low", "Close")
+		for value in data:
+			if value[0] > value[3]:
+				print("\033[0;0;32m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+			elif value[0] < value[3]:
+				print("\033[0;0;31m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+			elif value[0] == value[3]:
+				print("\033[0;0;0m("+ str(float(value[0]))+", ", str(float(value[1]))+", ", str(float(value[2]))+", ", str(float(value[3]))+")")
+		print("\033[0;0;0m\n")
 def main():
 	while True:
 		mainMenu()
