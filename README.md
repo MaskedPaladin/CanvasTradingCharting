@@ -6,5 +6,6 @@
 - System to adjust chart automatically with higher/lower values
 - System to obtain csv
 - Live charting
+- Normal or logarithmic charting mode selection
 # Notes
 - Work only with Metatrader csv
