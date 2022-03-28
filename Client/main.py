@@ -21,17 +21,6 @@ def mainMenu():
 		mainMenu()
 def loadMenu():
 	try:
-		c = client.ThreadedTcpSocketClient("localhost", 25565, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
-		c.start()
-		toSend = "09".encode("utf-8")
-		c.send(toSend)
-		data = c.recv(1024)
-		for b in data:
-			print("Reciving data")
-			f = open("csv/csv","a+")
-			f.write(b)
-		c.join()
-		f.close()
 		files = os.listdir("csv")
 		for i, f in enumerate(files):
 			print(str(i)+"/"+str(f))
@@ -49,7 +38,7 @@ def loadMenu():
 				zoomFactor = 1
 			if candles:
 				candles = int(candles)
-			showChart("csv/"+files[int(option)], candles, int(zoomFactor))	
+			showChart("csv/"+files[int(option)], candles, zoomFactor)	
 	except Exception as e:
 		logging.exception("Error")
 		sys.exit()
@@ -74,10 +63,14 @@ def showChart(path, candles, zoomFactor):
 	data = chart.loadFromMtCsv(str(path))
 	dataIntegers = []
 	for entry in data:
-		dataIntegers.append((int(math.log(entry[0])*zoomFactor), int(math.log(entry[1])*zoomFactor), int(math.log(entry[2])*zoomFactor), int(math.log(entry[3])*zoomFactor)))
+		if zoomFactor > 1:
+			dataIntegers.append((int(math.log(entry[0])*zoomFactor), int(math.log(entry[1])*zoomFactor), int(math.log(entry[2])*zoomFactor), int(math.log(entry[3])*zoomFactor)))
+		else:
+			dataIntegers.append((int(entry[0])*zoomFactor, int(entry[1])*zoomFactor, int(entry[2])*zoomFactor, int(entry[3])*zoomFactor))
 	if candles != None:
 		toDraw = dataIntegers[len(dataIntegers) - candles:]
-	toDraw = dataIntegers
+	else:
+		toDraw = dataIntegers
 	cv = canvas.Canvas(len(toDraw), int(chart.getMax(toDraw)))
 	cv.update(chart.getTilesByPoints(toDraw))
 	cv.drawCanvas()
